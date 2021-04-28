@@ -1,0 +1,103 @@
+Starvation-Free Readers-Writers Problem:
+
+Common Data:
+lock,r_sem,w_sem 
+nw_waiting,nw_active,nr_waiting,nr_active
+
+Reader Process:
+--------------
+do{
+  //ENTRY SECTION
+  wait(lock);
+  if(nw_waiting+nw_active == 0)
+  {
+    nr_active++;
+    signal(r_sem);
+  }
+  else 
+  {
+    nr_waiting++;
+  }
+  signal(lock);
+  wait(r_sem);
+
+  //CRITICAL SECTION
+  //----READING
+
+  //EXIT SECTION
+  wait(lock);
+  nr_active--;
+  if((nr_active == 0) && (nw_waiting > 0))
+  {
+    signal(w_sem);  //allowing writer to enter
+    nw_active++;
+    nw_waiting--;
+  }
+  signal(lock);
+  //REMAINDER SECTION
+  //------------------
+ 
+}while(true);
+
+
+Writer Process:
+--------------
+do{
+  //ENTRY SECTION
+  wait(lock);
+  if((nr_waiting+nr_active == 0) && nw_active == 0)
+  {
+    nw_active++;
+    signal(w_sem);
+  }
+  else
+  {
+    nw_waiting++;
+  }
+  signal(lock);
+  wait(w_sem);
+  //CRITICAL SECTION
+  //------WRITING
+  //EXIT SECTION
+  wait(lock);
+  nw_active--;
+  if((nw_active == 0) && (nr_waiting > 0))
+  {
+    while(nr_waiting > 0)
+    {
+      signal(r_sem);
+      nr_waiting--;
+      nr_active++;
+    }
+  }
+  else if(nw_waiting > 0)
+  {
+      signal(w_sem);
+      nw_waiting--;
+      nw_active++;
+  }
+  signal(lock);
+  //REMAINDER SECTION
+  //------------
+}while(true);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
