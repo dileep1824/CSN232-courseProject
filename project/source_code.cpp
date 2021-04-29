@@ -96,7 +96,8 @@ void* reader(void* args)
 
         //critical Section
         sem_wait(&ex_lock);
-        cout<<"Reader Thread with id "<<gettid()<<" entered critical section"<<endl<<endl;
+        pid_t id = syscall(SYS_gettid);
+        cout<<"Reader Thread with id "<<id<<" entered critical section"<<endl<<endl;
         sem_post(&ex_lock);
         char str[]="Reading data structure";
         sleep(1);
@@ -115,7 +116,7 @@ void* reader(void* args)
         cout<<'\r'<<endl<<endl;
         //sleep(1);
         sem_wait(&ex_lock);
-        cout<<"Reader Thread with id "<<gettid()<<" completed reading"<<endl;
+        cout<<"Reader Thread with id "<<id<<" completed reading"<<endl;
         sem_post(&ex_lock);
 
         //exit section
@@ -158,7 +159,8 @@ void* writer(void* args)
 
         //critical section
         cout<<"*-----------------------------------------------------------*"<<endl<<endl;
-        cout<<"Writer Thread with id "<<gettid()<<" entered critical section"<<endl<<endl;
+        pid_t id = syscall(SYS_gettid);
+        cout<<"Writer Thread with id "<<id<<" entered critical section"<<endl<<endl;
         char str[]="Writing to data structure";
         cout<<str<<" -"<<flush;
         for(int i=0;i<2;i++)
@@ -173,7 +175,7 @@ void* writer(void* args)
             cout<<"\b-"<<flush;
         }
         cout<<endl<<endl;
-        cout<<"Writer Thread with id "<<gettid()<<" completed Writing"<<endl;
+        cout<<"Writer Thread with id "<<id<<" completed Writing"<<endl;
         cout<<"*-----------------------------------------------------------*"<<endl;
 
         //exit section
