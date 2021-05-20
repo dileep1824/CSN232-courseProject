@@ -1,4 +1,4 @@
-
+//This would not work properly because integer operations are not atomic.
 //compile with -lpthread [-lrt] flags
 #include <iostream>
 #include <pthread.h>
